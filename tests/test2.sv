@@ -1,5 +1,8 @@
+// =======================================================================================
+// AXI4-Lite Protocol Verification Testbench (test2)
 // THIS TEST WRITES EACH REGISTER THEIR OWN ADDRESS AND CHECKS WHETHER EACH REGISTER'S DATA IS
 // SAME AS THE DATA WRITTEN BY THE MASTER AND PRINTS FINAL PASS OR FAIL
+// =======================================================================================
 module test2 #(parameter DATA_WIDTH = 32,
     parameter ADDR_WIDTH = 32
     )();
