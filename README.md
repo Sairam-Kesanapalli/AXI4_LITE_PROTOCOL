@@ -13,7 +13,9 @@ The project structure is organized as follows:
   * 📄 `axi4_lite_slave.v`: The slave interface controller managing standard handshaking and address decoding.
   * 📄 `register.v`: A 32-deep, 32-bit register file (RF) supporting byte-lane select strobes (`WSTRB`).
 * 📁 **[tests/](file:///home/Sairam/Documents/Cutout/AXI4_LITE_PROTOCOL/tests)**: Verification suites and testbenches.
-  * 📄 `test1.sv`: Cycle-accurate, race-free loopback verification testbench.
+  * 📄 `test1.sv`: Loopback verification testbench for registers 0 to 11.
+  * 📄 `test2.sv`: Comprehensive 32-register loopback verification testbench (registers 0 to 31).
+  * 📄 `test3.sv`: Byte-lane write select strobe (`WSTRB`) verification testbench.
 * 📄 **[Makefile](file:///home/Sairam/Documents/Cutout/AXI4_LITE_PROTOCOL/Makefile)**: Automation script to compile and run simulation tests.
 
 ---
@@ -23,13 +25,25 @@ The project structure is organized as follows:
 You can run, manage, and clean up the simulation directly from the repository root using `make`.
 
 ### 1. Compile & Run `test1` Simulation
-To compile the core design along with `test1.sv` and execute the simulation, run:
+To compile the core design along with `test1.sv` and execute the simulation:
 ```bash
 make test1
 ```
 
-### 2. Clean Up Simulation Artifacts
-To clean compiled binaries (`check.out`) and VCD waveforms (`waveform.vcd`), run:
+### 2. Compile & Run `test2` Simulation
+To compile the core design along with `test2.sv` and execute the simulation:
+```bash
+make test2
+```
+
+### 3. Compile & Run `test3` Simulation
+To compile the core design along with `test3.sv` and execute the simulation:
+```bash
+make test3
+```
+
+### 4. Clean Up Simulation Artifacts
+To clean compiled binaries and VCD waveforms:
 ```bash
 make clean
 ```
@@ -45,9 +59,10 @@ make clean
 
 ---
 
-## 🧪 Verification Roadmap & WIP Tests
+## 🧪 Verification Roadmap & Completed Tests
 
-In addition to the completed `test1` loopback test, the following test suites are planned for full protocol verification and are currently under development (WIP):
-* **Test 2: Asymmetric Backpressure Test (WIP)**: Verifies robust processing when channel handshakes (`READY`/`VALID`) occur asynchronously on separate cycles.
-* **Test 3: Boundary & Access Violation Test (WIP)**: Verifies proper `SLVERR` and `DECERR` responses on invalid/unmapped address reads or writes.
+* **Test 1: Standard Loopback Test (Completed & Verified)**: Verifies loopback transactions across register indices `0` to `11`.
+* **Test 2: Full 32-Register Depth Transaction Test (Completed & Verified)**: Verifies write-then-read loopbacks across the entire 32-register space of the Register File (addresses `0` to `124` / indices `0` to `31`).
+* **Test 3: Strobe / Byte-Lane Select Test (Completed & Verified)**: Verifies that byte-enables (`WSTRB`) selectively overwrite only the specified bytes in registers, leaving other bytes preserved.
 * **Test 4: Arbitration Test (WIP)**: Verifies bus arbitration and priority when write and read requests are asserted in the same cycle.
+* **Test 5: Boundary & Access Violation Test (WIP)**: Verifies proper `SLVERR` and `DECERR` responses on invalid/unmapped address reads or writes.
