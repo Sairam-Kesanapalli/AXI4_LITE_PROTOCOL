@@ -1,6 +1,8 @@
 // =======================================================================================
-// AXI4-Lite Protocol Loopback Verification Testbench (test1)
-
+// AXI4-Lite Protocol Verification Testbench (test3)
+// THIS TEST VERIFIES THE BYTE-LANE SELECT STROBE (WSTRB) FUNCTIONALITY.
+// BY WRITING DATA TO REGISTERS WITH DIFFERENT BYTE STROBES AND VERIFYING THE SAME.
+// THIS TEST CHECKS THE ACTUAL DATA AND EXPECTED DATA AND PRINTS FINAL PASS OR FAIL.
 // =======================================================================================
 module test3 #(parameter DATA_WIDTH = 32,
     parameter ADDR_WIDTH = 32
