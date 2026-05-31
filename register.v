@@ -30,6 +30,7 @@ module register_file #(
             end
             else begin
                 if(reg_write && valid_address) begin
+                    // $display("[Time %0t][RF WRITE] addr_index = %0d, data = %h, byte_en = %b", $time, addr_index, write_data, byte_en);
                     if (byte_en[0]) regs[addr_index][7:0]   <= write_data[7:0];
                     if (byte_en[1]) regs[addr_index][15:8]  <= write_data[15:8];
                     if (byte_en[2]) regs[addr_index][23:16] <= write_data[23:16];
@@ -40,8 +41,10 @@ module register_file #(
 
         // COMBINATIONAL READ
         always @(*) begin
-            if(reg_read && valid_address)
+            if(reg_read && valid_address) begin
                 read_data = regs[addr_index];
+                // $display("[Time %0t][RF READ] addr_index = %0d, read_data = %h", $time, addr_index, read_data);
+            end
             else
                 read_data = {DATA_WIDTH{1'b0}};
         end

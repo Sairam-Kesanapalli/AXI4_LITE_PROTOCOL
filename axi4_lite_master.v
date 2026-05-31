@@ -86,6 +86,7 @@ always @(posedge clk) begin
 	end
 	else begin
 		busy <= (next_state != IDLE);
+		// $display("[Time %0t][MASTER posedge] state=%0d, write_en=%b, wdata_in=%h, wdata_reg=%h, WDATA=%h", $time, current_state, write_en, wdata_in, wdata_reg, WDATA);
 	        // Clear when a new transaction starts
 		if(write_en || read_en) begin
 			done 	      <= 0;

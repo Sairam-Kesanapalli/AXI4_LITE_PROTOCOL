@@ -9,7 +9,7 @@ module axi4_lite_slave#(
     //AXI4-Lite interface
     //WRITE ADDRESS CHANNELS
     input [ADDR_WIDTH-1:0] AWADDR,
-    input [3:0] AWPROT,
+    input [2:0] AWPROT,
     input AWVALID,
     output reg AWREADY,
 
@@ -100,6 +100,7 @@ always @(posedge clk) begin
         raddr_reg      <= 0;
         waddr_reg      <= 0;
 	end else begin
+        // $display("[Time %0t][SLAVE posedge] state=%0d, WVALID=%b, WREADY=%b, WDATA=%h, write_data_reg=%h, WSTRB=%b, WSTRB_reg=%b", $time, current_state, WVALID, WREADY, WDATA, write_data_reg, WSTRB, WSTRB_reg);
 		if (current_state == IDLE) begin
             if(AWVALID && AWREADY) begin
                 AW_CAPTURED <= 1;
