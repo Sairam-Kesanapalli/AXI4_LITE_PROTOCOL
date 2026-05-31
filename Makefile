@@ -5,25 +5,43 @@ FLAGS = -g2012 # Support SystemVerilog standard
 
 # Design files
 SRC = src/axi4_lite_master.v src/axi4_lite_slave.v src/register.v
-# Testbench files
-TB = tests/test1.sv
-# Output compilation binary
-OUT = check.out
-# Simulation waveform output
-VCD = waveform.vcd
 
-.PHONY: all test1 clean
+# Output compilation binaries
+OUT1 = check1.out
+OUT2 = check2.out
+OUT3 = check3.out
 
-# Default target: compile the design and testbench
-all: $(OUT)
+# Simulation waveform outputs
+VCD1 = waveform.vcd
+VCD2 = waveform2.vcd
+VCD3 = waveform3.vcd
 
-$(OUT): $(SRC) $(TB)
-	$(SIM) $(FLAGS) $(SRC) $(TB) -o $(OUT)
+.PHONY: all test1 test2 test3 clean
 
-# Run the compiled simulation for test1
-test1: all
-	$(VVP) $(OUT)
+# Compile all tests
+all: $(OUT1) $(OUT2) $(OUT3)
+
+# Target for Test 1
+$(OUT1): $(SRC) tests/test1.sv
+	$(SIM) $(FLAGS) $(SRC) tests/test1.sv -o $(OUT1)
+
+test1: $(OUT1)
+	$(VVP) $(OUT1)
+
+# Target for Test 2
+$(OUT2): $(SRC) tests/test2.sv
+	$(SIM) $(FLAGS) $(SRC) tests/test2.sv -o $(OUT2)
+
+test2: $(OUT2)
+	$(VVP) $(OUT2)
+
+# Target for Test 3
+$(OUT3): $(SRC) tests/test3.sv
+	$(SIM) $(FLAGS) $(SRC) tests/test3.sv -o $(OUT3)
+
+test3: $(OUT3)
+	$(VVP) $(OUT3)
 
 # Clean build artifacts
 clean:
-	rm -f $(OUT) $(VCD)
+	rm -f $(OUT1) $(OUT2) $(OUT3) $(VCD1) $(VCD2) $(VCD3)
