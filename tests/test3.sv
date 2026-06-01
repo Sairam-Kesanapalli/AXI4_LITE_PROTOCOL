@@ -215,6 +215,24 @@ initial begin
     axi_read(32'd52,  32'hFF1122FF); // Preserved Byte 0 and 3
     axi_read(32'd56,  32'h33FFFF44); // Preserved Byte 1 and 2
     axi_read(32'd60,  32'h55667788); // Overwritten fully
+
+    // Strobe Test Case 2: Incremental Multi-Byte Writes
+    $display("\n--- [Test 3 Extra] Incremental Multi-Byte Writes ---");
+    axi_write(32'd64, 32'h00000000, 4'b1111); // Initialize to 00000000
+    axi_write(32'd64, 32'h11111111, 4'b0001); // Write Byte 0
+    axi_write(32'd64, 32'h22222222, 4'b0010); // Write Byte 1
+    axi_write(32'd64, 32'h33333333, 4'b0100); // Write Byte 2
+    axi_write(32'd64, 32'h44444444, 4'b1000); // Write Byte 3
+    axi_read(32'd64,  32'h44332211); // Expect 44332211
+
+    // Strobe Test Case 3: Alternate Byte Overwrite overlays
+    $display("\n--- [Test 3 Extra] Alternate Byte Overwrite overlays ---");
+    axi_write(32'd68, 32'hA5A5A5A5, 4'b1111); // Set to A5A5A5A5
+    axi_write(32'd68, 32'h5A5A5A5A, 4'b1010); // Overwrite Bytes 1 and 3 -> 5AA55AA5
+    axi_read(32'd68,  32'h5AA55AA5); // Expect 5AA55AA5
+    axi_write(32'd68, 32'hF0F0F0F0, 4'b0101); // Overwrite Bytes 0 and 2 -> 5AF05AF0
+    axi_read(32'd68,  32'h5AF05AF0); // Expect 5AF05AF0
+
     #40;
     $finish();
 end
