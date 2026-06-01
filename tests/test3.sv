@@ -184,6 +184,19 @@ initial begin
     axi_write(32'd44, 32'hFFFFFFFF, 4'b1111);
     axi_write(32'd44, 32'h00BBCCDD, 4'b1101);
 
+    // Remaining Strobe Combinations (0000, 0110, 1001, 1111)
+    axi_write(32'd48, 32'hFFFFFFFF, 4'b1111);
+    axi_write(32'd48, 32'h12345678, 4'b0000); // 0000: Write completely ignored
+
+    axi_write(32'd52, 32'hFFFFFFFF, 4'b1111);
+    axi_write(32'd52, 32'h00112200, 4'b0110); // 0110: Overwrites Bytes 1 and 2
+
+    axi_write(32'd56, 32'hFFFFFFFF, 4'b1111);
+    axi_write(32'd56, 32'h33000044, 4'b1001); // 1001: Overwrites Bytes 0 and 3
+
+    axi_write(32'd60, 32'hFFFFFFFF, 4'b1111);
+    axi_write(32'd60, 32'h55667788, 4'b1111); // 1111: Overwrites all Bytes
+
     axi_read(32'd0,  32'hFFFFFFAA);
     axi_read(32'd4,  32'hFFFFBBFF);
     axi_read(32'd8,  32'hFFCCFFFF);
@@ -196,6 +209,12 @@ initial begin
     axi_read(32'd36,  32'hAABBCCFF); // Strobe 1110 preserves Byte 0 (FF)
     axi_read(32'd40,  32'hAAFFCCDD);
     axi_read(32'd44,  32'h00BBFFDD); // Strobe 1101 preserves Byte 1 (FF) and writes Byte 3 (00)
+    
+    // Reads for the new strobe combinations
+    axi_read(32'd48,  32'hFFFFFFFF); // Ignored write should leave FF intact
+    axi_read(32'd52,  32'hFF1122FF); // Preserved Byte 0 and 3
+    axi_read(32'd56,  32'h33FFFF44); // Preserved Byte 1 and 2
+    axi_read(32'd60,  32'h55667788); // Overwritten fully
     #40;
     $finish();
 end

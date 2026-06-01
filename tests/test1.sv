@@ -151,6 +151,7 @@ initial begin
     // Continuous $monitor removed to keep output clean and concise
 
 
+    // Test Case 1: Write and Read back across address 0 to 44 (standard check)
     axi_write(32'd0,  32'd305419896);
     axi_read(32'd0);
 
@@ -186,6 +187,25 @@ initial begin
 
     axi_write(32'd44, 32'd444444444);
     axi_read(32'd44);
+
+    // Test Case 2: Overwrite Check (Overwrite address 0 and verify)
+    $display("\n--- [Test 1 Extra] Overwrite Check ---");
+    axi_write(32'd0, 32'hDEADBEEF);
+    axi_read(32'd0); // Expect DEADBEEF
+
+    // Test Case 3: Back-to-back writes before read
+    $display("\n--- [Test 1 Extra] Back-to-Back Check ---");
+    axi_write(32'd4, 32'hAAAA5555);
+    axi_write(32'd8, 32'h5555AAAA);
+    axi_read(32'd4); // Expect AAAA5555
+    axi_read(32'd8); // Expect 5555AAAA
+
+    // Test Case 4: Extreme Values Check
+    $display("\n--- [Test 1 Extra] Extreme Values Check ---");
+    axi_write(32'd12, 32'h00000000);
+    axi_read(32'd12); // Expect 00000000
+    axi_write(32'd12, 32'hFFFFFFFF);
+    axi_read(32'd12); // Expect FFFFFFFF
 
     #40;
     $finish();

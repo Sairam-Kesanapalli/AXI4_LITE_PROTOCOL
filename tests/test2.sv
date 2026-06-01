@@ -121,7 +121,7 @@ end
     endtask
 
     // AXI Read Task (Pulse & Wait)
-    task automatic axi_read(input [ADDR_WIDTH-1:0] addr);
+    task automatic axi_read(input [ADDR_WIDTH-1:0] addr, input [DATA_WIDTH-1:0] expected_data);
         begin
             write_en <= 0; read_en <= 1;
             addr_in <= addr;
@@ -129,11 +129,11 @@ end
             read_en <= 0; // Deassert immediately on next clock edge
             @(posedge clk); // Wait 1 cycle for master to reset done=0 before we check it
             while (!done) @(posedge clk); // Wait dynamically for transaction done
-            if (rdata_out == addr)begin
+            if (rdata_out == expected_data)begin
                 $display("[PASS] Addr =%h data =%h", addr, rdata_out);
             end
             else 
-                $display("[FAIL] Addr =%h data =%h", addr, rdata_out);
+                $display("[FAIL] Addr =%h expected =%h got =%h", addr, expected_data, rdata_out);
         end
     endtask
 
@@ -146,7 +146,7 @@ initial begin
     rst_n = 1;
     @(posedge clk);
 
-    // Continuous $monitor removed to keep output clean and concise
+    $display("--- [Test 2] Sweep 1: Write Address to Each Register ---");
     axi_write(32'd0,   32'd0);
     axi_write(32'd4,   32'd4);
     axi_write(32'd8,   32'd8);
@@ -180,39 +180,107 @@ initial begin
     axi_write(32'd120, 32'd120);
     axi_write(32'd124, 32'd124);
 
-    axi_read(32'd0);
-    axi_read(32'd4);
-    axi_read(32'd8);
-    axi_read(32'd12);
-    axi_read(32'd16);
-    axi_read(32'd20);
-    axi_read(32'd24);
-    axi_read(32'd28);
-    axi_read(32'd32);
-    axi_read(32'd36);
-    axi_read(32'd40);
-    axi_read(32'd44);
-    axi_read(32'd48);
-    axi_read(32'd52);
-    axi_read(32'd56);
-    axi_read(32'd60);
-    axi_read(32'd64);
-    axi_read(32'd68);
-    axi_read(32'd72);
-    axi_read(32'd76);
-    axi_read(32'd80);
-    axi_read(32'd84);
-    axi_read(32'd88);
-    axi_read(32'd92);
-    axi_read(32'd96);
-    axi_read(32'd100);
-    axi_read(32'd104);
-    axi_read(32'd108);
-    axi_read(32'd112);
-    axi_read(32'd116);
-    axi_read(32'd120);
-    axi_read(32'd124);
+    $display("--- [Test 2] Sweep 1: Read back and Verify ---");
+    axi_read(32'd0,   32'd0);
+    axi_read(32'd4,   32'd4);
+    axi_read(32'd8,   32'd8);
+    axi_read(32'd12,  32'd12);
+    axi_read(32'd16,  32'd16);
+    axi_read(32'd20,  32'd20);
+    axi_read(32'd24,  32'd24);
+    axi_read(32'd28,  32'd28);
+    axi_read(32'd32,  32'd32);
+    axi_read(32'd36,  32'd36);
+    axi_read(32'd40,  32'd40);
+    axi_read(32'd44,  32'd44);
+    axi_read(32'd48,  32'd48);
+    axi_read(32'd52,  32'd52);
+    axi_read(32'd56,  32'd56);
+    axi_read(32'd60,  32'd60);
+    axi_read(32'd64,  32'd64);
+    axi_read(32'd68,  32'd68);
+    axi_read(32'd72,  32'd72);
+    axi_read(32'd76,  32'd76);
+    axi_read(32'd80,  32'd80);
+    axi_read(32'd84,  32'd84);
+    axi_read(32'd88,  32'd88);
+    axi_read(32'd92,  32'd92);
+    axi_read(32'd96,  32'd96);
+    axi_read(32'd100, 32'd100);
+    axi_read(32'd104, 32'd104);
+    axi_read(32'd108, 32'd108);
+    axi_read(32'd112, 32'd112);
+    axi_read(32'd116, 32'd116);
+    axi_read(32'd120, 32'd120);
+    axi_read(32'd124, 32'd124);
 
+    $display("\n--- [Test 2] Sweep 2: Write Inverted Address (~Addr) to Each Register ---");
+    axi_write(32'd0,   ~32'd0);
+    axi_write(32'd4,   ~32'd4);
+    axi_write(32'd8,   ~32'd8);
+    axi_write(32'd12,  ~32'd12);
+    axi_write(32'd16,  ~32'd16);
+    axi_write(32'd20,  ~32'd20);
+    axi_write(32'd24,  ~32'd24);
+    axi_write(32'd28,  ~32'd28);
+    axi_write(32'd32,  ~32'd32);
+    axi_write(32'd36,  ~32'd36);
+    axi_write(32'd40,  ~32'd40);
+    axi_write(32'd44,  ~32'd44);
+    axi_write(32'd48,  ~32'd48);
+    axi_write(32'd52,  ~32'd52);
+    axi_write(32'd56,  ~32'd56);
+    axi_write(32'd60,  ~32'd60);
+    axi_write(32'd64,  ~32'd64);
+    axi_write(32'd68,  ~32'd68);
+    axi_write(32'd72,  ~32'd72);
+    axi_write(32'd76,  ~32'd76);
+    axi_write(32'd80,  ~32'd80);
+    axi_write(32'd84,  ~32'd84);
+    axi_write(32'd88,  ~32'd88);
+    axi_write(32'd92,  ~32'd92);
+    axi_write(32'd96,  ~32'd96);
+    axi_write(32'd100, ~32'd100);
+    axi_write(32'd104, ~32'd104);
+    axi_write(32'd108, ~32'd108);
+    axi_write(32'd112, ~32'd112);
+    axi_write(32'd116, ~32'd116);
+    axi_write(32'd120, ~32'd120);
+    axi_write(32'd124, ~32'd124);
+
+    $display("--- [Test 2] Sweep 2: Read back and Verify ---");
+    axi_read(32'd0,   ~32'd0);
+    axi_read(32'd4,   ~32'd4);
+    axi_read(32'd8,   ~32'd8);
+    axi_read(32'd12,  ~32'd12);
+    axi_read(32'd16,  ~32'd16);
+    axi_read(32'd20,  ~32'd20);
+    axi_read(32'd24,  ~32'd24);
+    axi_read(32'd28,  ~32'd28);
+    axi_read(32'd32,  ~32'd32);
+    axi_read(32'd36,  ~32'd36);
+    axi_read(32'd40,  ~32'd40);
+    axi_read(32'd44,  ~32'd44);
+    axi_read(32'd48,  ~32'd48);
+    axi_read(32'd52,  ~32'd52);
+    axi_read(32'd56,  ~32'd56);
+    axi_read(32'd60,  ~32'd60);
+    axi_read(32'd64,  ~32'd64);
+    axi_read(32'd68,  ~32'd68);
+    axi_read(32'd72,  ~32'd72);
+    axi_read(32'd76,  ~32'd76);
+    axi_read(32'd80,  ~32'd80);
+    axi_read(32'd84,  ~32'd84);
+    axi_read(32'd88,  ~32'd88);
+    axi_read(32'd92,  ~32'd92);
+    axi_read(32'd96,  ~32'd96);
+    axi_read(32'd100, ~32'd100);
+    axi_read(32'd104, ~32'd104);
+    axi_read(32'd108, ~32'd108);
+    axi_read(32'd112, ~32'd112);
+    axi_read(32'd116, ~32'd116);
+    axi_read(32'd120, ~32'd120);
+    axi_read(32'd124, ~32'd124);
 
     #40;
     $finish();

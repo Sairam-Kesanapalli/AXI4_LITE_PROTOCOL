@@ -150,14 +150,31 @@ initial begin
     @(posedge clk);
 
     
-    axi_write(32'd128, 32'd1111111111, 1, 2'b10);
+    // Test Case 1: Valid Upper Boundary Check (Address 124 / Index 31)
+    $display("--- [Test 4] Valid Boundary Check ---");
+    axi_write(32'd124, 32'hAAAA5555, 0, 2'b00); // Should Pass
+    axi_read(32'd124, 0, 2'b00);               // Should Pass
+
+    // Test Case 2: Out of Bounds Boundary Check (Address 128 / Index 32)
+    $display("\n--- [Test 4] First Invalid Address Check ---");
+    axi_write(32'd128, 32'd1111111111, 1, 2'b10); // Should Fail (SLVERR)
     axi_read(32'd128, 1, 2'b10);
 
+    // Test Case 3: Other Arbitrary Out of Bounds Checks
+    $display("\n--- [Test 4] Arbitrary Invalid Addresses ---");
     axi_write(32'd300, 32'd2222222222, 1, 2'b10);
     axi_read(32'd300, 1, 2'b10);
 
     axi_write(32'd240, 32'd3333333333, 1, 2'b10);
     axi_read(32'd240, 1, 2'b10);
+
+    // Test Case 4: Extreme High Address Space Checks
+    $display("\n--- [Test 4] Extreme High Addresses ---");
+    axi_write(32'h7FFFFFFF, 32'hDEADBEEF, 1, 2'b10);
+    axi_read(32'h7FFFFFFF, 1, 2'b10);
+
+    axi_write(32'hFFFFFFFC, 32'hCAFECAFE, 1, 2'b10);
+    axi_read(32'hFFFFFFFC, 1, 2'b10);
 
     #40;
     $finish();
