@@ -10,16 +10,18 @@ SRC = src/axi4_lite_master.v src/axi4_lite_slave.v src/register.v
 OUT1 = check1.out
 OUT2 = check2.out
 OUT3 = check3.out
+OUT4 = check4.out
 
 # Simulation waveform outputs
 VCD1 = waveform.vcd
 VCD2 = waveform2.vcd
 VCD3 = waveform3.vcd
+VCD4 = waveform4.vcd
 
-.PHONY: all test1 test2 test3 clean
+.PHONY: all test1 test2 test3 test4 clean
 
 # Compile all tests
-all: $(OUT1) $(OUT2) $(OUT3)
+all: $(OUT1) $(OUT2) $(OUT3) $(OUT4)
 
 # Target for Test 1
 $(OUT1): $(SRC) tests/test1.sv
@@ -42,6 +44,12 @@ $(OUT3): $(SRC) tests/test3.sv
 test3: $(OUT3)
 	$(VVP) $(OUT3)
 
+# Target for Test 4
+$(OUT4): $(SRC) tests/test4.sv
+	$(SIM) $(FLAGS) $(SRC) tests/test4.sv -o $(OUT4)
+
+test4: $(OUT4)
+	$(VVP) $(OUT4)
 # Clean build artifacts
 clean:
-	rm -f $(OUT1) $(OUT2) $(OUT3) $(VCD1) $(VCD2) $(VCD3)
+	rm -f $(OUT1) $(OUT2) $(OUT3) $(OUT4) $(VCD1) $(VCD2) $(VCD3) $(VCD4)
