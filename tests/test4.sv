@@ -1,6 +1,7 @@
 // =======================================================================================
-// AXI4-Lite Protocol Loopback Verification Testbench (test1)
-// 
+// AXI4-Lite Protocol Verification Testbench (test4)
+// This test checks the AXI slave for illegal address ranges. 
+// This is a self checking test which prints pass or fail after comparing.
 // =======================================================================================
 module test4 #(parameter DATA_WIDTH = 32,
     parameter ADDR_WIDTH = 32
