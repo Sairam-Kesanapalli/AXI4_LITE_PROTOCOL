@@ -17,7 +17,7 @@ module register_file #(
 );
         localparam REG_ADDR_WIDTH = $clog2(REG_DEPTH);
         wire [REG_ADDR_WIDTH-1:0] addr_index = rd[REG_ADDR_WIDTH+1:2];
-        assign valid_address = (addr_index < REG_DEPTH);
+        assign valid_address = (rd < (REG_DEPTH * 4));
         
         // REGISTER
         reg [DATA_WIDTH-1:0] regs [0:REG_DEPTH-1];
