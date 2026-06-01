@@ -1,6 +1,7 @@
 module axi4_lite_slave#(
     parameter ADDR_WIDTH = 32,
-    parameter DATA_WIDTH = 32
+    parameter DATA_WIDTH = 32,
+    parameter REG_DEPTH = 32
 )(
     //Clock and reset 
     input clk,
@@ -53,7 +54,8 @@ reg [2:0] current_state, next_state;
 reg [ADDR_WIDTH-1:0] raddr_reg, waddr_reg;
 reg [DATA_WIDTH-1:0] write_data_reg, read_data_reg;
 reg AW_CAPTURED, W_CAPTURED, AR_CAPTURED;
-wire valid_address;
+wire valid_address = (current_state == FETCH_DATA || current_state == SEND_DATA) ? 
+                     (raddr_reg < (REG_DEPTH * 4)) : (waddr_reg < (REG_DEPTH * 4));
 
 reg reg_write;
 reg reg_read;
@@ -170,6 +172,7 @@ always @(*) begin
 		SEND_RESP : begin
 			BVALID  = 1;
 			BRESP   = valid_address ? OKAY : SLVERR ; 
+			rd      = waddr_reg;
 		end
         FETCH_DATA: begin
             reg_read = 1;
@@ -179,12 +182,13 @@ always @(*) begin
             RVALID  = 1;
             RRESP   = valid_address ? OKAY : SLVERR ; 
             RDATA   = valid_address ? read_data_reg : 0; 
+            rd      = raddr_reg;
         end
     endcase
 end
 
 register_file #(
-    .REG_DEPTH(32),
+    .REG_DEPTH(REG_DEPTH),
     .DATA_WIDTH(DATA_WIDTH),
     .ADDR_WIDTH(ADDR_WIDTH)
 ) rf (
@@ -198,6 +202,6 @@ register_file #(
     .byte_en(WSTRB_reg),
 
     .read_data(read_data),
-    .valid_address(valid_address)    
+    .valid_address()    
 );
 endmodule
