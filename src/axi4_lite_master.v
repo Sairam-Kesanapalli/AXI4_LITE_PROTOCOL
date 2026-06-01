@@ -115,14 +115,15 @@ always @(posedge clk) begin
 
 		// Set when response arrives
 		if (current_state == WAIT_B && BVALID) begin
-			if (BRESP == OKAY) done  <= 1;
-			else 		   error <= 1;
+			resp_out <= BRESP;
+			done     <= 1;
+			if (BRESP != OKAY) error <= 1;
 		end
 		if (current_state == WAIT_R && RVALID) begin
 			rdata_out <= RDATA;
 			resp_out  <= RRESP;
-			if (RRESP == OKAY) done <= 1;
-			else 		   error <= 1;
+			done      <= 1;
+			if (RRESP != OKAY) error <= 1;
 		end
 	end
 end
