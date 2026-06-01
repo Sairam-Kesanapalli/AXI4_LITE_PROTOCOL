@@ -207,6 +207,38 @@ initial begin
     axi_write(32'd12, 32'hFFFFFFFF);
     axi_read(32'd12); // Expect FFFFFFFF
 
+    // Test Case 5: Reset Mid-Transaction Verification
+    $display("\n--- [Test 1 Extra] Reset Mid-Transaction Verification ---");
+    write_en <= 1; read_en <= 0;
+    addr_in <= 32'd16;
+    wdata_in <= 32'h12345678;
+    @(posedge clk);
+    write_en <= 0;
+    @(posedge clk);
+    $display("[Time %0t] Asserting reset mid-transaction...", $time);
+    rst_n = 0; // Assert reset
+    @(posedge clk);
+    @(posedge clk);
+    rst_n = 1; // Deassert reset
+    $display("[Time %0t] Deasserted reset. Verifying master/slave recovery...", $time);
+    @(posedge clk);
+    axi_write(32'd20, 32'h87654321);
+    axi_read(32'd20); // Expect 87654321
+
+    // Test Case 6: Simultaneous Read/Write Priority Check
+    $display("\n--- [Test 1 Extra] Simultaneous Read/Write Priority Check ---");
+    write_en <= 1;
+    read_en <= 1;
+    addr_in <= 32'd24;
+    wdata_in <= 32'h55AA55AA;
+    @(posedge clk);
+    write_en <= 0;
+    read_en <= 0;
+    @(posedge clk);
+    while (!done) @(posedge clk);
+    $display("[Time %0t] Simultaneous request finished. Verifying write succeeded...", $time);
+    axi_read(32'd24); // Expect 55AA55AA
+
     #40;
     $finish();
 end
