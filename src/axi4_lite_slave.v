@@ -1,3 +1,4 @@
+/* verilator lint_off MULTITOP */
 module axi4_lite_slave#(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32,
@@ -10,7 +11,9 @@ module axi4_lite_slave#(
     //AXI4-Lite interface
     //WRITE ADDRESS CHANNELS
     input [ADDR_WIDTH-1:0] AWADDR,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [2:0] AWPROT,
+    /* verilator lint_on UNUSEDSIGNAL */
     input AWVALID,
     output reg AWREADY,
 
@@ -27,7 +30,9 @@ module axi4_lite_slave#(
     
     //READ ADDRESS CHANNELS
     input [ADDR_WIDTH-1:0] ARADDR,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [2:0] ARPROT,
+    /* verilator lint_on UNUSEDSIGNAL */
     input ARVALID,
     output reg ARREADY,
 
@@ -46,21 +51,20 @@ localparam FETCH_DATA	= 3'd4;
 localparam SEND_DATA    = 3'd5;
 
 localparam OKAY	   = 2'd0;
-localparam EXOKAY  = 2'd1;
+// localparam EXOKAY  = 2'd1;
 localparam SLVERR  = 2'd2;
-localparam DECERR  = 2'd3;
+// localparam DECERR  = 2'd3;
 
 reg [2:0] current_state, next_state;
 reg [ADDR_WIDTH-1:0] raddr_reg, waddr_reg;
 reg [DATA_WIDTH-1:0] write_data_reg, read_data_reg;
-reg AW_CAPTURED, W_CAPTURED, AR_CAPTURED;
+reg AW_CAPTURED, W_CAPTURED;
 wire valid_address = (current_state == FETCH_DATA || current_state == SEND_DATA) ? 
                      (raddr_reg < (REG_DEPTH * 4)) : (waddr_reg < (REG_DEPTH * 4));
 
 reg reg_write;
 reg reg_read;
 reg [ADDR_WIDTH-1:0] rd;
-reg [1:0] rresp;
 reg [3:0] WSTRB_reg;
 wire [DATA_WIDTH-1:0] read_data;
 
@@ -74,8 +78,8 @@ end
 always @(*) begin
 	case (current_state)
 		IDLE : begin
-			if (AWVALID && WVALID)  next_state = WRITE_REG;
-			else if (AWVALID)       next_state = WAIT_DATA;
+			if (AW_CAPTURED && W_CAPTURED)  next_state = WRITE_REG;
+			else if (AW_CAPTURED)       next_state = WAIT_DATA;
 			else if (ARVALID) 	next_state = FETCH_DATA;
 			else 	          	next_state = IDLE;
 		end
@@ -88,6 +92,7 @@ always @(*) begin
 		SEND_RESP : next_state = (BVALID && BREADY)? IDLE : SEND_RESP;
         FETCH_DATA: next_state = SEND_DATA;
         SEND_DATA : next_state = (RVALID && RREADY) ? IDLE : SEND_DATA;
+		default: next_state = IDLE;
 	endcase
 end
 
@@ -95,7 +100,6 @@ always @(posedge clk) begin
 	if (!rst_n) begin
         AW_CAPTURED    <= 0;
         W_CAPTURED     <= 0;
-        AR_CAPTURED    <= 0;
         WSTRB_reg      <= 0;
         read_data_reg  <= 0;
         write_data_reg <= 0;
@@ -114,7 +118,6 @@ always @(posedge clk) begin
                 WSTRB_reg      <= WSTRB;
             end
             if(ARVALID && ARREADY) begin
-                AR_CAPTURED <= 1;
                 raddr_reg   <= ARADDR;
             end
         end
@@ -132,9 +135,6 @@ always @(posedge clk) begin
         end
         else if (current_state == FETCH_DATA) begin
             read_data_reg <= read_data;
-        end
-        else if (current_state == SEND_DATA && RVALID && RREADY) begin
-            AR_CAPTURED <= 0;
         end
 	end	
 end
@@ -184,6 +184,7 @@ always @(*) begin
             RDATA   = valid_address ? read_data_reg : 0; 
             rd      = raddr_reg;
         end
+		default: ;
     endcase
 end
 
@@ -202,6 +203,8 @@ register_file #(
     .byte_en(WSTRB_reg),
 
     .read_data(read_data),
-    .valid_address()    
+    /* verilator lint_off PINCONNECTEMPTY */
+    .valid_address()
+    /* verilator lint_on PINCONNECTEMPTY */
 );
 endmodule
