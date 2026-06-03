@@ -8,16 +8,16 @@ This repository contains a high-performance, fully standard-compliant, and latch
 
 The project structure is organized as follows:
 
-* 📁 **[src/](file:///home/Sairam/Documents/Cutout/AXI4_LITE_PROTOCOL/src)**: Core RTL design source files.
+* 📁 **[src/](src/)**: Core RTL design source files.
   * 📄 `axi4_lite_master.v`: The master interface controller featuring registered inputs, sequential outputs, and independent channel tracking.
   * 📄 `axi4_lite_slave.v`: The slave interface controller managing standard handshaking and address decoding.
   * 📄 `register.v`: A 32-deep, 32-bit register file (RF) supporting byte-lane select strobes (`WSTRB`).
-* 📁 **[tests/](file:///home/Sairam/Documents/Cutout/AXI4_LITE_PROTOCOL/tests)**: Verification suites and testbenches.
+* 📁 **[tests/](tests/)**: Verification suites and testbenches.
   * 📄 `test1.sv`: Loopback verification testbench for registers 0 to 11.
   * 📄 `test2.sv`: Comprehensive 32-register loopback verification testbench (registers 0 to 31).
   * 📄 `test3.sv`: Byte-lane write select strobe (`WSTRB`) verification testbench.
   * 📄 `test4.sv`: Out-of-bounds error handling and access violation (`SLVERR`) verification testbench.
-* 📄 **[Makefile](file:///home/Sairam/Documents/Cutout/AXI4_LITE_PROTOCOL/Makefile)**: Automation script to compile and run simulation tests.
+* 📄 **[Makefile](Makefile)**: Automation script to compile and run simulation tests.
 
 ---
 
