@@ -1,3 +1,4 @@
+/* verilator lint_off MULTITOP */
 module axi4_lite_master #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
@@ -65,9 +66,9 @@ localparam AR      = 3'd3;
 localparam WAIT_R  = 3'd4;
 
 localparam OKAY	   = 2'd0;
-localparam EXOKAY  = 2'd1;
-localparam SLVERR  = 2'd2;
-localparam DECERR  = 2'd3;
+// localparam EXOKAY  = 2'd1;
+// localparam SLVERR  = 2'd2;
+// localparam DECERR  = 2'd3;
 
 reg [2:0] current_state, next_state;
 
@@ -186,6 +187,7 @@ always @(*) begin
 		WAIT_R : begin
 			RREADY = 1;
 		end
+		default: ;
 	endcase
 end
 endmodule
