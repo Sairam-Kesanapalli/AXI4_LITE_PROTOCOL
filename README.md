@@ -16,6 +16,7 @@ The project structure is organized as follows:
   * 📄 `test1.sv`: Loopback verification testbench for registers 0 to 11.
   * 📄 `test2.sv`: Comprehensive 32-register loopback verification testbench (registers 0 to 31).
   * 📄 `test3.sv`: Byte-lane write select strobe (`WSTRB`) verification testbench.
+  * 📄 `test4.sv`: Out-of-bounds error handling and access violation (`SLVERR`) verification testbench.
 * 📄 **[Makefile](file:///home/Sairam/Documents/Cutout/AXI4_LITE_PROTOCOL/Makefile)**: Automation script to compile and run simulation tests.
 
 ---
@@ -42,7 +43,13 @@ To compile the core design along with `test3.sv` and execute the simulation:
 make test3
 ```
 
-### 4. Clean Up Simulation Artifacts
+### 4. Compile & Run `test4` Simulation
+To compile the core design along with `test4.sv` and execute the simulation:
+```bash
+make test4
+```
+
+### 5. Clean Up Simulation Artifacts
 To clean compiled binaries and VCD waveforms:
 ```bash
 make clean
@@ -61,8 +68,8 @@ make clean
 
 ## 🧪 Verification Roadmap & Completed Tests
 
-* **Test 1: Standard Loopback Test (Completed & Verified)**: Verifies loopback transactions across register indices `0` to `11`.
-* **Test 2: Full 32-Register Depth Transaction Test (Completed & Verified)**: Verifies write-then-read loopbacks across the entire 32-register space of the Register File (addresses `0` to `124` / indices `0` to `31`).
-* **Test 3: Strobe / Byte-Lane Select Test (Completed & Verified)**: Verifies that byte-enables (`WSTRB`) selectively overwrite only the specified bytes in registers, leaving other bytes preserved.
-* **Test 4: Arbitration Test (WIP)**: Verifies bus arbitration and priority when write and read requests are asserted in the same cycle.
-* **Test 5: Boundary & Access Violation Test (WIP)**: Verifies proper `SLVERR` and `DECERR` responses on invalid/unmapped address reads or writes.
+All verification tests are fully implemented, verified, and complete:
+* **Test 1: Standard Loopback & Stress Test**: Verifies loopback transactions across registers `0` to `11`, clock-accurate sequential handshakes, **[NEW] mid-transaction reset recovery**, and **[NEW] simultaneous write/read master priority arbitration**.
+* **Test 2: Full 32-Register Depth Sweep**: Sweeps the entire 32-register depth (indices `0` to `31`) using sequential address sweeps and inverted address sweeps (`~addr`) to verify complete address space mapping and stability.
+* **Test 3: Strobe & Byte-Lane Write Strobe Test**: Tests all 16 `WSTRB` mask combinations, **[NEW] incremental multi-byte writing** (Byte 0 -> Byte 1 -> Byte 2 -> Byte 3), and **[NEW] alternate byte overwrite overlays** verifying perfect byte-lane isolation.
+* **Test 4: Boundary & Access Violation Test**: Verifies `SLVERR` and `error` responses for out-of-bounds addresses (`128`, `300`, `240`, `32'h7FFFFFFF`), **[NEW] unaligned address alignment masking (offsets 1, 2, 3 and boundary 127)**, and **[NEW] mixed valid/invalid sequential transaction stream recovery**.
