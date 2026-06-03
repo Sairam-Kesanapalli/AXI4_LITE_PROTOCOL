@@ -4,7 +4,7 @@ VVP = vvp
 FLAGS = -g2012 # Support SystemVerilog standard
 
 # Design files
-SRC = src/axi4_lite_master.v src/axi4_lite_slave.v src/register.v
+SRC = src/axi4_lite_master.v src/axi4_lite_slave.v src/register_file.v
 
 # Output compilation binaries
 OUT1 = check1.out

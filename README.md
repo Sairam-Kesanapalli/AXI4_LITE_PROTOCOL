@@ -11,7 +11,7 @@ The project structure is organized as follows:
 * 📁 **[src/](src/)**: Core RTL design source files.
   * 📄 `axi4_lite_master.v`: The master interface controller featuring registered inputs, sequential outputs, and independent channel tracking.
   * 📄 `axi4_lite_slave.v`: The slave interface controller managing standard handshaking and address decoding.
-  * 📄 `register.v`: A 32-deep, 32-bit register file (RF) supporting byte-lane select strobes (`WSTRB`).
+  * 📄 `register_file.v`: A 32-deep, 32-bit register file (RF) supporting byte-lane select strobes (`WSTRB`).
 * 📁 **[tests/](tests/)**: Verification suites and testbenches.
   * 📄 `test1.sv`: Loopback verification testbench for registers 0 to 11.
   * 📄 `test2.sv`: Comprehensive 32-register loopback verification testbench (registers 0 to 31).
