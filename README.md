@@ -4,6 +4,45 @@ This repository contains a high-performance, fully standard-compliant, and latch
 
 ---
 
+## 🏛️ System Architecture
+
+The following block diagrams illustrate the modular partitioning of the AXI4-Lite IP Core, showing the interface between the Master FSM, Slave controllers, and the Register File.
+
+### Master-Slave Interconnect Topology
+```text
+MASTER                          SLAVE
+              ┌─────────────┐                 ┌──────────────────┐
+ write_en ───>│             │──── AW ─────────>│  Write Logic     │
+ read_en  ───>│  Write FSM  │──── W  ─────────>│  (capture AW+W,  │
+ addr_in  ───>│  Read FSM   │<─── B  ──────────│   decode, write) │
+ wdata_in ───>│             │                  │                  │
+              │             │──── AR ─────────>│  Read Logic      │──> accelerator
+ rdata_out<───│             │<─── R  ──────────│  (decode, fetch) │
+ done     <───│             │                  │                  │
+              └─────────────┘                  │  Register File   │
+                                               │  [31:0][31:0]    │
+                                               └──────────────────┘
+```
+
+### Slave Module Internal Structure
+```text
+┌─────────────────────────────────────────────┐
+│              AXI4-Lite Slave                │
+│                                             │
+│  ┌─────────────┐      ┌──────────────────┐  │
+│  │ Write Logic │─────>│                  │  │
+│  │ (AW+W+B)    │      │  Register File   │  │
+│  └─────────────┘      │  [31:0][31:0]    │  │
+│                       │                  │  │
+│  ┌─────────────┐      │                  │  │
+│  │ Read Logic  │<─────│                  │  │
+│  │ (AR+R)      │      └──────────────────┘  │
+│  └─────────────┘                            │
+└─────────────────────────────────────────────┘
+```
+
+---
+
 ## 📂 Repository Directory Layout
 
 The project structure is organized as follows:
