@@ -49,7 +49,16 @@ To compile the core design along with `test4.sv` and execute the simulation:
 make test4
 ```
 
-### 5. Clean Up Simulation Artifacts
+### 5. View Waveforms in GTKWave
+To view the generated waveforms using GTKWave:
+```bash
+make view1   # Open test1 waveform (waveform.vcd)
+make view2   # Open test2 waveform (waveform2.vcd)
+make view3   # Open test3 waveform (waveform3.vcd)
+make view4   # Open test4 waveform (waveform4.vcd)
+```
+
+### 6. Clean Up Simulation Artifacts
 To clean compiled binaries and VCD waveforms:
 ```bash
 make clean

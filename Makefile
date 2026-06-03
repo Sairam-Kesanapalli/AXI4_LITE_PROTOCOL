@@ -18,7 +18,7 @@ VCD2 = waveform2.vcd
 VCD3 = waveform3.vcd
 VCD4 = waveform4.vcd
 
-.PHONY: all test1 test2 test3 test4 clean
+.PHONY: all test1 test2 test3 test4 clean view1 view2 view3 view4
 
 # Compile all tests
 all: $(OUT1) $(OUT2) $(OUT3) $(OUT4)
@@ -30,12 +30,18 @@ $(OUT1): $(SRC) tests/test1.sv
 test1: $(OUT1)
 	$(VVP) $(OUT1)
 
+view1:
+	gtkwave $(VCD1)
+
 # Target for Test 2
 $(OUT2): $(SRC) tests/test2.sv
 	$(SIM) $(FLAGS) $(SRC) tests/test2.sv -o $(OUT2)
 
 test2: $(OUT2)
 	$(VVP) $(OUT2)
+
+view2:
+	gtkwave $(VCD2)
 
 # Target for Test 3
 $(OUT3): $(SRC) tests/test3.sv
@@ -44,12 +50,19 @@ $(OUT3): $(SRC) tests/test3.sv
 test3: $(OUT3)
 	$(VVP) $(OUT3)
 
+view3:
+	gtkwave $(VCD3)
+
 # Target for Test 4
 $(OUT4): $(SRC) tests/test4.sv
 	$(SIM) $(FLAGS) $(SRC) tests/test4.sv -o $(OUT4)
 
 test4: $(OUT4)
 	$(VVP) $(OUT4)
+
+view4:
+	gtkwave $(VCD4)
+
 # Clean build artifacts
 clean:
 	rm -f $(OUT1) $(OUT2) $(OUT3) $(OUT4) $(VCD1) $(VCD2) $(VCD3) $(VCD4)
