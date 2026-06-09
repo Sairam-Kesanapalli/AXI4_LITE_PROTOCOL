@@ -66,7 +66,7 @@ wire valid_address = (current_state == FETCH_DATA || current_state == SEND_DATA)
 reg reg_write;
 reg reg_read;
 reg [ADDR_WIDTH-1:0] rd;
-reg [BYTE_EN_WIDTH-1:0] WSTRB_reg;
+reg [WSTRB_WIDTH-1:0] WSTRB_reg;
 wire [DATA_WIDTH-1:0] read_data;
 
 //STATE UPDATE REGISTER

@@ -26,14 +26,14 @@ module register_file #(
         // WRITE LOGIC
         always @(posedge clk) begin
             if(!rst_n) begin
-                for(integer i =0; i<REG_DEPTH; i++)
+                for(integer i=0; i<REG_DEPTH; i++)
                     regs[i] <= {DATA_WIDTH{1'b0}};
             end
             else begin
                 if(reg_write && valid_address) begin
                     // $display("[Time %0t][RF WRITE] addr_index = %0d, data = %h, byte_en = %b", $time, addr_index, write_data, byte_en);
-                    for(i=0; i<BYTE_EN_WIDTH; i=i+1)
-                        if(byte_en[i]) regs[addr_index][(i*8)+7 : i*8] <= write_data[(i*8)+7 : i*8];
+                    for(integer i=0; i<BYTE_EN_WIDTH; i++)
+                        if(byte_en[i]) regs[addr_index][i*8 +: 8] <= write_data[i*8 +: 8];
                 end
             end
         end
