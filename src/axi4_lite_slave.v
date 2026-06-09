@@ -2,7 +2,8 @@
 module axi4_lite_slave#(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32,
-    parameter REG_DEPTH = 32
+    parameter REG_DEPTH = 32,
+    parameter WSTRB_WIDTH = (DATA_WIDTH/8)
 )(
     //Clock and reset 
     input clk,
@@ -20,7 +21,7 @@ module axi4_lite_slave#(
     //WRITE DATA CHANNELS
     input WVALID,
     input [DATA_WIDTH-1:0] WDATA,
-    input [(DATA_WIDTH/8)-1:0] WSTRB,
+    input [WSTRB_WIDTH-1:0] WSTRB,
     output reg WREADY,
 
     //WRITE RESPONSE CHANNELS
@@ -65,7 +66,7 @@ wire valid_address = (current_state == FETCH_DATA || current_state == SEND_DATA)
 reg reg_write;
 reg reg_read;
 reg [ADDR_WIDTH-1:0] rd;
-reg [3:0] WSTRB_reg;
+reg [BYTE_EN_WIDTH-1:0] WSTRB_reg;
 wire [DATA_WIDTH-1:0] read_data;
 
 //STATE UPDATE REGISTER

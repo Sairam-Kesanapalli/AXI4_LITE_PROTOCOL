@@ -1,7 +1,8 @@
 module register_file #(
     parameter REG_DEPTH = 32,
     parameter DATA_WIDTH = 32,
-    parameter ADDR_WIDTH = $clog2(REG_DEPTH)  // HERE C IS CEILING (OPPOSITE TO STEP)
+    parameter ADDR_WIDTH = $clog2(REG_DEPTH),  // HERE C IS CEILING (OPPOSITE TO STEP)
+    parameter BYTE_EN_WIDTH = (DATA_WIDTH/8)
 )(
     input clk,
     input rst_n, 
@@ -10,7 +11,7 @@ module register_file #(
     input reg_read,
     input [ADDR_WIDTH-1:0] rd,              
     input [DATA_WIDTH-1:0] write_data,
-    input [3:0] byte_en,
+    input [BYTE_EN_WIDTH-1:0] byte_en,
 
     output reg [DATA_WIDTH-1:0] read_data,
     output valid_address
@@ -31,10 +32,8 @@ module register_file #(
             else begin
                 if(reg_write && valid_address) begin
                     // $display("[Time %0t][RF WRITE] addr_index = %0d, data = %h, byte_en = %b", $time, addr_index, write_data, byte_en);
-                    if (byte_en[0]) regs[addr_index][7:0]   <= write_data[7:0];
-                    if (byte_en[1]) regs[addr_index][15:8]  <= write_data[15:8];
-                    if (byte_en[2]) regs[addr_index][23:16] <= write_data[23:16];
-                    if (byte_en[3]) regs[addr_index][31:24] <= write_data[31:24];
+                    for(i=0; i<BYTE_EN_WIDTH; i=i+1)
+                        if(byte_en[i]) regs[addr_index][(i*8)+7 : i*8] <= write_data[(i*8)+7 : i*8];
                 end
             end
         end
