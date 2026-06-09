@@ -142,11 +142,11 @@ end
 //OUTPUT lOGIC
 //DONT WRITE ADDRESS REG OR WRITE DATA REG TO 0
 always @(*) begin
-	AWREADY = 0;
-	WREADY  = 0;
+    AWREADY = 0;
+    WREADY  = 0;
+    ARREADY = 0;
 	BRESP   = 2'b00;
 	BVALID  = 0;
-    ARREADY = 0;
 	RVALID  = 0;
 	RDATA   = 0;
 	RRESP   = 2'b00;
@@ -156,16 +156,17 @@ always @(*) begin
 	
 	case(current_state) 
 		IDLE : begin
-			AWREADY = 1;
-			WREADY	= 1;
-			ARREADY = 1;
-		end
+            AWREADY = rst_n ? 1 : 0;
+            WREADY  = rst_n ? 1 : 0;
+            ARREADY = rst_n ? 1 : 0;
+        end //AWREADY = 1;WREADY  = 1;ARREADY = 1;
 		WAIT_DATA : begin
-			AWREADY = 0;
-			WREADY  = 1;
-		end
+            AWREADY = 0;
+            WREADY  = rst_n ? 1 : 0;
+            ARREADY = 0;
+        end //AWREADY = 0;ARREADY = 0;WREADY  = 1;
 		WRITE_REG : begin
-			WREADY    = 0;
+            WREADY  = 0;
 			reg_write = 1;
 			rd 	  = waddr_reg;
 		end 
