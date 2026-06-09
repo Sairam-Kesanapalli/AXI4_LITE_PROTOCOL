@@ -178,15 +178,13 @@ initial begin
 
     // Test Case 5: Unaligned Address Alignment Masking Verification
     $display("\n--- [Test 4 Extra] Unaligned Address Alignment Masking ---");
-    axi_write(32'd1, 32'hDEADBEEF, 0, 2'b00); // Should Pass (OKAY), maps to Register 0 (Index 0)
-    axi_read(32'd0, 0, 2'b00); 
-    if (rdata_out !== 32'hDEADBEEF) $display("[ERROR] Expected 32'hDEADBEEF at address 0, got %h", rdata_out);
-    axi_read(32'd2, 0, 2'b00);
-    if (rdata_out !== 32'hDEADBEEF) $display("[ERROR] Expected 32'hDEADBEEF at address 2, got %h", rdata_out);
+    axi_write(32'd1, 32'hDEADBEEF, 1, 2'b10); // Should Fail (SLVERR) due to alignment violation
+    axi_read(32'd0, 0, 2'b00);                // Should Pass (aligned 0)
+    // Note: The previous write to address 1 failed, so address 0 should not contain DEADBEEF.
+    axi_read(32'd2, 1, 2'b10);                // Should Fail (SLVERR) due to alignment violation
 
-    axi_write(32'd127, 32'hCAFEF00D, 0, 2'b00); // Should Pass (OKAY), maps to Register 31 (Index 31)
-    axi_read(32'd124, 0, 2'b00); 
-    if (rdata_out !== 32'hCAFEF00D) $display("[ERROR] Expected 32'hCAFEF00D at address 124, got %h", rdata_out);
+    axi_write(32'd127, 32'hCAFEF00D, 1, 2'b10); // Should Fail (SLVERR) due to alignment violation
+    axi_read(32'd124, 0, 2'b00);                // Should Pass (aligned 124)
 
     // Test Case 6: Mixed Valid/Invalid Sequential Access Stream
     $display("\n--- [Test 4 Extra] Mixed Valid/Invalid Sequential Access Stream ---");

@@ -52,16 +52,25 @@ localparam FETCH_DATA	= 3'd4;
 localparam SEND_DATA    = 3'd5;
 
 localparam OKAY	   = 2'd0;
-// localparam EXOKAY  = 2'd1;
+// localparam EXOKAY  = 2'd1;   // USED BY INTERCONNECT - NO NEED NOW!
 localparam SLVERR  = 2'd2;
-// localparam DECERR  = 2'd3;
+// localparam DECERR  = 2'd3;   // USED ONLY WITH AXI exclusive accesses (atomic operations) - NO NEED NOW!
+
+localparam ALIGN_WIDTH = $clog2(DATA_WIDTH / 8); // 2 for 32-bit data
 
 reg [2:0] current_state, next_state;
 reg [ADDR_WIDTH-1:0] raddr_reg, waddr_reg;
 reg [DATA_WIDTH-1:0] write_data_reg, read_data_reg;
 reg AW_CAPTURED, W_CAPTURED;
-wire valid_address = (current_state == FETCH_DATA || current_state == SEND_DATA) ? 
+
+wire address_aligned = (current_state == FETCH_DATA || current_state == SEND_DATA) ? 
+                       (raddr_reg[ALIGN_WIDTH-1:0] == 0) :
+                       (waddr_reg[ALIGN_WIDTH-1:0] == 0);
+
+wire within_bounds = (current_state == FETCH_DATA || current_state == SEND_DATA) ? 
                      (raddr_reg < (REG_DEPTH * 4)) : (waddr_reg < (REG_DEPTH * 4));
+
+wire valid_address = address_aligned && within_bounds;
 
 reg reg_write;
 reg reg_read;
