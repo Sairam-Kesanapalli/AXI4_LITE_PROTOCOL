@@ -11,7 +11,7 @@ The following block diagrams illustrate the modular partitioning of the AXI4-Lit
 ### Master-Slave Interconnect Topology
 ```text
 MASTER                          SLAVE
-              ┌─────────────┐                 ┌──────────────────┐
+              ┌─────────────┐                  ┌──────────────────┐
  write_en ───>│             │──── AW ─────────>│  Write Logic     │
  read_en  ───>│  Write FSM  │──── W  ─────────>│  (capture AW+W,  │
  addr_in  ───>│  Read FSM   │<─── B  ──────────│   decode, write) │
