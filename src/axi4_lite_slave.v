@@ -88,13 +88,13 @@ end
 always @(*) begin
 	case (current_state)
 		IDLE : begin
-			if (AW_CAPTURED && W_CAPTURED)  next_state = WRITE_REG;
-			else if (AW_CAPTURED)       next_state = WAIT_DATA;
+			if ((AW_CAPTURED || AWVALID) && (W_CAPTURED || WVALID))  next_state = WRITE_REG;
+			else if (AW_CAPTURED || AWVALID)       next_state = WAIT_DATA;
 			else if (ARVALID) 	next_state = FETCH_DATA;
 			else 	          	next_state = IDLE;
 		end
 		WAIT_DATA : begin
-			next_state = WVALID ? WRITE_REG : WAIT_DATA;
+			next_state = (WVALID || W_CAPTURED) ? WRITE_REG : WAIT_DATA;
 		end
 		WRITE_REG : begin
 			next_state = SEND_RESP;
